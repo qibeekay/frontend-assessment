@@ -1,5 +1,3 @@
-// src/components/props/AttractionResultsCardProp.tsx
-import React from "react";
 import { getImageSrc } from "../../utils/imageUtils";
 import Button from "./Button";
 import { Link } from "react-router-dom";

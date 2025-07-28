@@ -1,5 +1,3 @@
-// src/pages/flights/FlightsPage.tsx
-import React from "react";
 import { useFlight } from "../../config/FlightContext";
 import FlightCard from "../props/FlightCard";
 import { getImageSrc } from "../../utils/imageUtils";
@@ -12,11 +10,21 @@ const FlightsPage = () => {
   return (
     <div className="h-full">
       <div className="w-full bg-[#F0F2F5] rounded-[4px] text-white h-full p-[24px]">
-        <div className="flex items-center gap-[8px]">
-          <div>
-            <img src={getImageSrc("fly.svg")} alt="" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-[8px]">
+            <div>
+              <img src={getImageSrc("fly.svg")} alt="" />
+            </div>
+            <p className="font-semibold text-sm text-textPrimary">Flights</p>
           </div>
-          <p className="font-semibold text-sm text-textPrimary">Flights</p>
+
+          {flights.length > 0 && (
+            <Link to="/flights/results">
+              <div>
+                <Button variant="white">Add Flights</Button>
+              </div>
+            </Link>
+          )}
         </div>
         <div className="mt-10">
           {flights.length === 0 ? (
@@ -36,7 +44,7 @@ const FlightsPage = () => {
           ) : (
             <div className="grid grid-cols-1 gap-4">
               {flights.map((flight) => (
-                <FlightCard key={flight.id} flight={flight} />
+                <FlightCard key={flight.id} flight={flight} remove />
               ))}
             </div>
           )}

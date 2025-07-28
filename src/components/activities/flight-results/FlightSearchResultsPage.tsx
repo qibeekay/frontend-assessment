@@ -1,5 +1,3 @@
-// src/components/flights/FlightResultsPage.tsx
-import React from "react";
 import FlightCard from "../../props/FlightCard";
 import type { Flight } from "../../../utils/types";
 

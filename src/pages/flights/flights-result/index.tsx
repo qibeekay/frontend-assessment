@@ -1,38 +1,67 @@
-// src/pages/flights/FlightSearchResults.tsx
 import React, { useState } from "react";
 import type { Flight, FlightSearchParams } from "../../../utils/types";
 import { searchFlightDestinations, searchFlights } from "../../../api/booking";
-import FlightResultsPage from "../../../components/activities/flight-results/FlightSearchResultsPage";
 import Button from "../../../components/props/Button";
+import Input from "../../../components/props/formInputs/Input";
+import PassengerDropdown from "../../../components/activities/flight-results/PassengerDropdown";
+import Select from "../../../components/props/formInputs/Select";
+import FlightResultsPage from "../../../components/activities/flight-results/FlightSearchResultsPage";
 
-const FlightSearchResults = () => {
+const FlightSearchResults: React.FC = () => {
+  // State for search form inputs
   const [fromQuery, setFromQuery] = useState("");
   const [toQuery, setToQuery] = useState("");
   const [departDate, setDepartDate] = useState(
-    new Date().toISOString().split("T")[0] // 2025-07-27
+    new Date().toISOString().split("T")[0] // e.g., 2025-07-28
   );
   const [returnDate, setReturnDate] = useState(
     new Date(new Date().setDate(new Date().getDate() + 1))
       .toISOString()
-      .split("T")[0] // 2025-07-28
+      .split("T")[0] // e.g., 2025-07-29
   );
-  const [adults, setAdults] = useState("1");
-  const [children, setChildren] = useState("0");
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const [stops, setStops] = useState("none");
   const [sort, setSort] = useState("BEST");
   const [cabinClass, setCabinClass] = useState("ECONOMY");
+
+  // State for search results and UI
   const [searchResults, setSearchResults] = useState<Flight[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Options for select dropdowns
+  const stopsOptions = [
+    { value: "none", label: "Any Stops" },
+    { value: "0", label: "Non-Stop" },
+    { value: "1", label: "1 Stop" },
+    { value: "2", label: "2 Stops" },
+  ];
+
+  const sortOptions = [
+    { value: "BEST", label: "Best" },
+    { value: "CHEAPEST", label: "Cheapest" },
+    { value: "FASTEST", label: "Fastest" },
+  ];
+
+  const cabinClassOptions = [
+    { value: "ECONOMY", label: "Economy" },
+    { value: "PREMIUM_ECONOMY", label: "Economy +" },
+    { value: "BUSINESS", label: "Business" },
+    { value: "FIRST", label: "First" },
+  ];
+
+  // Handle flight search
   const handleSearch = async () => {
     if (!fromQuery || !toQuery) {
       setError("Please enter both departure and arrival destinations.");
       setSearchResults([]);
       return;
     }
+
     setLoading(true);
     setError(null);
+
     try {
       // Step 1: Search for departure destination
       const fromResponse = await searchFlightDestinations({
@@ -76,18 +105,14 @@ const FlightSearchResults = () => {
         returnDate,
         stops,
         pageNo: "1",
-        adults,
-        children,
+        adults: adults.toString(),
+        children: children > 0 ? `${children},17` : "0",
         sort,
         cabinClass,
         currency_code: "AED",
       };
       const flightResponse = await searchFlights(flightParams);
 
-      // Log the full response to verify structure
-      console.log("Flight Response:", flightResponse.data);
-
-      // Check if flightOffers exists and is an array
       if (!flightResponse?.data?.flightOffers?.length) {
         setError(
           "No flights found for the selected route or invalid response structure."
@@ -96,14 +121,14 @@ const FlightSearchResults = () => {
         return;
       }
 
+      // Map flight offers to Flight type
       const flights: Flight[] = flightResponse.data.flightOffers.map(
         (offer: any) => {
-          const segment = offer.segments[0]; // Use the first segment
-          const leg = segment.legs[0]; // Use the first leg
-
+          const segment = offer.segments[0];
+          const leg = segment.legs[0];
           return {
             id:
-              offer.token || `${segment.departureTime}-${segment.arrivalTime}`, // Fallback ID
+              offer.token || `${segment.departureTime}-${segment.arrivalTime}`,
             token:
               offer.token || `${segment.departureTime}-${segment.arrivalTime}`,
             departureAirport: segment.departureAirport.code,
@@ -117,11 +142,11 @@ const FlightSearchResults = () => {
               { hour: "2-digit", minute: "2-digit" }
             ),
             price:
-              offer.priceBreakdown?.total?.units +
-                offer.priceBreakdown?.total?.nanos / 1e9 || 0, // Fallback to 0 if no price
+              (offer.priceBreakdown?.total?.units || 0) +
+              (offer.priceBreakdown?.total?.nanos || 0) / 1e9,
             currency: offer.priceBreakdown?.total?.currencyCode || "AED",
             image: leg.carriersData?.[0]?.logo || "detail.png",
-            duration: segment.totalTime / 3600, // Hours
+            duration: segment.totalTime / 3600,
             airlineName: leg.carriersData?.[0]?.name || "Unknown Airline",
             flightNumber: leg.flightInfo?.flightNumber?.toString() || "N/A",
             flightClass: leg.cabinClass || "ECONOMY",
@@ -176,6 +201,7 @@ const FlightSearchResults = () => {
     }
   };
 
+  // Handle Enter key for search
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch();
@@ -183,87 +209,72 @@ const FlightSearchResults = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="mb-4 flex flex-col gap-3">
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-5 gap-2 w-full">
-          <input
-            type="text"
-            value={fromQuery}
-            onChange={(e) => setFromQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="From (e.g., Mumbai)..."
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 col-span-1 sm:col-span-2"
+    <div className="mx-auto mt-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-4 flex flex-col gap-3 bg-blue-950 rounded-[4px] p-4">
+        <div className="flex items-center flex-wrap gap-x-7">
+          <PassengerDropdown
+            adults={adults}
+            setAdults={setAdults}
+            children={children}
+            setChildren={setChildren}
           />
-          <input
-            type="text"
-            value={toQuery}
-            onChange={(e) => setToQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="To (e.g., New Delhi)..."
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 col-span-1 sm:col-span-2"
+          <Select
+            value={stops}
+            onChange={(e) => setStops(e.target.value)}
+            options={stopsOptions}
+            className="col-span-1 sm:col-span-1"
           />
-          <input
+          <Select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            options={sortOptions}
+            className="col-span-1 sm:col-span-1"
+          />
+          <Select
+            value={cabinClass}
+            onChange={(e) => setCabinClass(e.target.value)}
+            options={cabinClassOptions}
+            className="col-span-1 sm:col-span-1"
+          />
+        </div>
+        {/* Search Form */}
+        <div className="flex-1 flex flex-col lg:flex-row gap-2 w-full">
+          <div className="w-full">
+            <Input
+              type="text"
+              value={fromQuery}
+              onChange={(e) => setFromQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="e.g., Mumbai..."
+              className=""
+              label="From"
+            />
+          </div>
+          <div className="w-full">
+            <Input
+              type="text"
+              value={toQuery}
+              onChange={(e) => setToQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="(e.g. New Delhi..."
+              className=""
+              label="To"
+            />
+          </div>
+          <Input
             type="date"
             value={departDate}
             onChange={(e) => setDepartDate(e.target.value)}
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 col-span-1 sm:col-span-1"
+            className=""
+            label="Departure"
           />
-          <input
+          <Input
             type="date"
             value={returnDate}
             onChange={(e) => setReturnDate(e.target.value)}
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 col-span-1 sm:col-span-1"
+            className=""
+            label="Return"
           />
-          <div className="flex gap-2 col-span-1 sm:col-span-1">
-            <select
-              value={adults}
-              onChange={(e) => setAdults(e.target.value)}
-              className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="1">1 Adult</option>
-              <option value="2">2 Adults</option>
-              <option value="3">3 Adults</option>
-              <option value="4">4 Adults</option>
-            </select>
-            <select
-              value={children}
-              onChange={(e) => setChildren(e.target.value)}
-              className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="0">0 Children</option>
-              <option value="1,17">1 Child</option>
-              <option value="2,17">2 Children</option>
-            </select>
-          </div>
-          <select
-            value={stops}
-            onChange={(e) => setStops(e.target.value)}
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 col-span-1 sm:col-span-1"
-          >
-            <option value="none">Any Stops</option>
-            <option value="0">Non-Stop</option>
-            <option value="1">1 Stop</option>
-            <option value="2">2 Stops</option>
-          </select>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 col-span-1 sm:col-span-1"
-          >
-            <option value="BEST">Best</option>
-            <option value="CHEAPEST">Cheapest</option>
-            <option value="FASTEST">Fastest</option>
-          </select>
-          <select
-            value={cabinClass}
-            onChange={(e) => setCabinClass(e.target.value)}
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 col-span-1 sm:col-span-1"
-          >
-            <option value="ECONOMY">Economy</option>
-            <option value="PREMIUM_ECONOMY">Premium Economy</option>
-            <option value="BUSINESS">Business</option>
-            <option value="FIRST">First</option>
-          </select>
         </div>
         <div>
           <Button onClick={handleSearch} variant="blue">
@@ -271,17 +282,18 @@ const FlightSearchResults = () => {
           </Button>
         </div>
       </div>
+
+      {/* Error and Loading States */}
       {error && (
         <p className="text-red-500 text-sm sm:text-base mb-4">{error}</p>
       )}
       {loading && (
         <p className="text-gray-600 text-sm sm:text-base mb-4">Loading...</p>
       )}
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="w-full lg:w-64 xl:w-80 shrink-0">
-          {/* Add flight filters here if needed */}
-        </div>
-        <div className="flex-1">
+
+      {/* Results */}
+      <div className="w-full">
+        <div className="w-full">
           <FlightResultsPage results={searchResults} />
         </div>
       </div>

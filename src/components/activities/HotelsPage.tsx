@@ -1,5 +1,3 @@
-// src/components/activities/ActivityPage.tsx
-import React from "react";
 import { getImageSrc } from "../../utils/imageUtils";
 import Button from "../props/Button";
 import { Link } from "react-router-dom";
@@ -15,11 +13,17 @@ const HotelsPage = () => {
   return (
     <div className="h-full">
       <div className="w-full bg-[#344054] rounded-[4px] text-white h-full p-[24px]">
-        <div className="flex items-center gap-[8px]">
-          <div>
-            <img src={getImageSrc("warehouse.png")} alt="" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-[8px]">
+            <div>
+              <img src={getImageSrc("warehouse.png")} alt="" />
+            </div>
+            <p className="font-semibold text-sm">Hotels</p>
           </div>
-          <p className="font-semibold text-sm">Hotels</p>
+
+          <div>
+            <Button>Add Hotels</Button>
+          </div>
         </div>
         <div className="mt-10">
           {hotels.length === 0 ? (
