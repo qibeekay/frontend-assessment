@@ -8,6 +8,7 @@ import HotelResultsPage from "../../../components/activities/hotel-result/HotelR
 import PassengerDropdown from "../../../components/activities/flight-results/PassengerDropdown";
 import Select from "../../../components/props/formInputs/Select";
 import Input from "../../../components/props/formInputs/Input";
+import { Link } from "react-router-dom";
 
 const roomOptions = [
   { value: "1", label: "1 Room" },
@@ -132,6 +133,11 @@ const HotelSearchResults = () => {
 
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-4 w-fit">
+        <Link to={"/"}>
+          <Button variant="lightBlue">Home</Button>
+        </Link>
+      </div>
       <div className="mb-4 flex flex-col gap-3 bg-blue-950 rounded-[4px] p-4">
         <div className="flex items-center flex-wrap gap-x-7">
           <PassengerDropdown

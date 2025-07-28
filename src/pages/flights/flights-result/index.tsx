@@ -6,6 +6,7 @@ import Input from "../../../components/props/formInputs/Input";
 import PassengerDropdown from "../../../components/activities/flight-results/PassengerDropdown";
 import Select from "../../../components/props/formInputs/Select";
 import FlightResultsPage from "../../../components/activities/flight-results/FlightSearchResultsPage";
+import { Link } from "react-router-dom";
 
 const FlightSearchResults: React.FC = () => {
   // State for search form inputs
@@ -210,6 +211,11 @@ const FlightSearchResults: React.FC = () => {
 
   return (
     <div className="mx-auto mt-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-4 w-fit">
+        <Link to={"/"}>
+          <Button variant="lightBlue">Home</Button>
+        </Link>
+      </div>
       <div className="mb-4 flex flex-col gap-3 bg-blue-950 rounded-[4px] p-4">
         <div className="flex items-center flex-wrap gap-x-7">
           <PassengerDropdown

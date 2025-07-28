@@ -1,4 +1,4 @@
-import { AlignJustify } from "lucide-react";
+import { AlignJustify, ChevronDown } from "lucide-react";
 import Button from "../components/props/Button";
 import LinksProps from "../components/props/LinksProps";
 import { getImageSrc } from "../utils/imageUtils";
@@ -11,22 +11,22 @@ const FirstLinks = [
   },
   {
     name: "Dashboard",
-    icon: "home.svg",
+    icon: "dash.png",
     address: "/dashboard",
   },
   {
     name: "Wallet",
-    icon: "home.svg",
+    icon: "wallet.svg",
     address: "",
   },
   {
     name: "Plan a trip",
-    icon: "home.svg",
+    icon: "trip.png",
     address: "",
   },
   {
     name: "Commission for life",
-    icon: "home.svg",
+    icon: "life.svg",
     address: "",
   },
 ];
@@ -34,24 +34,24 @@ const FirstLinks = [
 const SecondLinks = [
   {
     name: "Notification",
-    icon: "home.svg",
+    icon: "bell.png",
     address: "",
   },
   {
     name: "Carts",
-    icon: "home.svg",
+    icon: "cart.png",
     address: "",
   },
   {
     name: "Create",
-    icon: "home.svg",
+    icon: "create.png",
     address: "",
   },
 ];
 
 const Navbar = () => {
   return (
-    <nav className="sticky top-0 px-5 py-[24px] max-w-[1920px] bg-white mx-auto">
+    <nav className="sticky top-0 px-5 py-[24px] max-w-[1920px] bg-white mx-auto z-40">
       <div className="w-full flex items-center justify-between">
         {/* logo / search */}
         <div className="flex items-center gap-[28px]">
@@ -76,9 +76,9 @@ const Navbar = () => {
         </div>
 
         {/* links / profile */}
-        <div className="hidden xl:flex items-center gap-[24px]">
+        <div className="hidden xl:flex items-center gap-[24px] ">
           {FirstLinks.map((link, index) => (
-            <div className="" key={index}>
+            <div className=" " key={index}>
               <LinksProps
                 icon={link.icon}
                 name={link.name}
@@ -86,6 +86,8 @@ const Navbar = () => {
               />
             </div>
           ))}
+
+          <div className="w-[1px] h-[40px] bg-[#98A2B3]"></div>
 
           <div>
             <div className="flex items-center gap-[24px]">
@@ -102,6 +104,24 @@ const Navbar = () => {
                   />
                 </div>
               ))}
+
+              <div className="">
+                <div className="flex items-center gap-[15px]">
+                  <div>
+                    <div className="w-[52px] aspect-square rounded-full overflow-hidden">
+                      <img
+                        className="w-full h-full object-cover"
+                        src={getImageSrc("detail.png")}
+                        alt=""
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <ChevronDown className="w-5" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

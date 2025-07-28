@@ -27,5 +27,35 @@ export const sidebarRoutes: Record<string, SidebarRoute[]> = {
       icon: getImageSrc("flight.svg"),
       component: Activities,
     },
+    {
+      name: "Study",
+      path: "/study",
+      icon: getImageSrc("study.svg"),
+      component: Activities,
+    },
+    {
+      name: "Visa",
+      path: "/visa",
+      icon: getImageSrc("visa.svg"),
+      component: Activities,
+    },
+    {
+      name: "Immigration",
+      path: "/immigration",
+      icon: getImageSrc("immi.svg"),
+      component: Activities,
+    },
+    {
+      name: "Medical",
+      path: "/medical",
+      icon: getImageSrc("medical.svg"),
+      component: Activities,
+    },
+    {
+      name: "Vacation Packages",
+      path: "/packages",
+      icon: getImageSrc("package.svg"),
+      component: Activities,
+    },
   ],
 };
