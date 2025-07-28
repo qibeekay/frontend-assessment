@@ -104,14 +104,19 @@ const HotelResultsCardProp = ({
                       Price details
                     </Link>
                   </div>
-                  <div>
-                    <Button
-                      variant="blue"
-                      onClick={handleAddToBooking}
-                      disabled={isAdded}
-                    >
-                      {isAdded ? "Added" : "Add to Booking"}
-                    </Button>
+                  <div className="relative">
+                    {isAdded ? (
+                      <Link
+                        to={""}
+                        className="text-xs sm:text-base text-primary hover:underline font-medium"
+                      >
+                        Edit Details
+                      </Link>
+                    ) : (
+                      <Button variant="blue" onClick={handleAddToBooking}>
+                        Add to Itinerary
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

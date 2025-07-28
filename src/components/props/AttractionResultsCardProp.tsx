@@ -104,14 +104,19 @@ const AttractionResultsCardProp = ({
                       Price details
                     </Link>
                   </div>
-                  <div>
-                    <Button
-                      variant="blue"
-                      onClick={handleAddToItinerary}
-                      disabled={isAdded}
-                    >
-                      {isAdded ? "Added" : "Add to Itinerary"}
-                    </Button>
+                  <div className="relative">
+                    {isAdded ? (
+                      <Link
+                        to={""}
+                        className="text-xs sm:text-base text-primary hover:underline font-medium"
+                      >
+                        Edit Details
+                      </Link>
+                    ) : (
+                      <Button variant="blue" onClick={handleAddToItinerary}>
+                        Add to Itinerary
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

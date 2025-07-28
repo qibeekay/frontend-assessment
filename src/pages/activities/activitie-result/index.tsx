@@ -1,10 +1,11 @@
-// src/pages/activities/activitie-result.tsx
 import React, { useState } from "react";
 import type { ActivitySearchParams, Attraction } from "../../../utils/types";
 import { searchAttractions, searchLocations } from "../../../api/booking";
 import Button from "../../../components/props/Button";
 import ActivityFilter from "../../../components/activities/activity-results/ActivityFilter";
 import ActivityResultsPage from "../../../components/activities/activity-results/ActivityResultsPage";
+import Input from "../../../components/props/formInputs/Input";
+import { Link } from "react-router-dom";
 
 const ActivitySearchResults = () => {
   const [query, setQuery] = useState("");
@@ -42,7 +43,7 @@ const ActivitySearchResults = () => {
       }
 
       const attractionResponse = await searchAttractions({
-        id: destination.ufi.toString(),
+        id: destination.id,
         sortBy: "trending",
         page: "1",
         currency_code: "USD",
@@ -90,21 +91,33 @@ const ActivitySearchResults = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-2">
-        <div className="flex-1">
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Search for attractions (e.g., Mumbai)..."
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-4 w-fit">
+        <Link to={"/"}>
+          <Button variant="lightBlue">Home</Button>
+        </Link>
+      </div>
+      <div className="mb-4 flex flex-col gap-3 bg-blue-950 rounded-[4px] p-4">
+        <div className="flex items-center flex-wrap gap-x-7">
+          <div className="w-full">
+            <Input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="e.g., Mumbai..."
+              className=""
+              label="Location"
+            />
+          </div>
+          <div className="flex justify-end w-full mt-4">
+            <div className="w-fit">
+              <Button onClick={handleSearch} variant="blue">
+                Search
+              </Button>
+            </div>
+          </div>
         </div>
-        <Button onClick={handleSearch} variant="blue">
-          Search
-        </Button>
       </div>
       {error && (
         <p className="text-red-500 text-sm sm:text-base mb-4">{error}</p>
@@ -112,7 +125,7 @@ const ActivitySearchResults = () => {
       {loading && (
         <p className="text-gray-600 text-sm sm:text-base mb-4">Loading...</p>
       )}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6 mt-5">
         <div className="w-full lg:w-64 xl:w-80 shrink-0">
           <ActivityFilter filterOptions={filterOptions} />
         </div>

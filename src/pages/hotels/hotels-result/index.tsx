@@ -5,6 +5,16 @@ import { searchDestinations, searchHotels } from "../../../api/booking";
 import Button from "../../../components/props/Button";
 import ActivityFilter from "../../../components/activities/activity-results/ActivityFilter";
 import HotelResultsPage from "../../../components/activities/hotel-result/HotelResultsPage";
+import PassengerDropdown from "../../../components/activities/flight-results/PassengerDropdown";
+import Select from "../../../components/props/formInputs/Select";
+import Input from "../../../components/props/formInputs/Input";
+
+const roomOptions = [
+  { value: "1", label: "1 Room" },
+  { value: "2", label: "2 Room" },
+  { value: "3", label: "3 Room" },
+  { value: "4", label: "4 Room" },
+];
 
 const HotelSearchResults = () => {
   const [query, setQuery] = useState("");
@@ -16,7 +26,8 @@ const HotelSearchResults = () => {
       .toISOString()
       .split("T")[0] // 2025-07-28
   );
-  const [adults, setAdults] = useState("1");
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState("1");
   const [searchResults, setSearchResults] = useState<Attraction[]>([]);
   const [loading, setLoading] = useState(false);
@@ -53,8 +64,8 @@ const HotelSearchResults = () => {
       const hotelParams: HotelSearchParams = {
         dest_id: destination.dest_id,
         search_type: "CITY",
-        adults,
-        children_age: "0",
+        adults: adults.toString(),
+        children_age: children > 0 ? `${children},17` : "0",
         room_qty: rooms,
         page_number: "1",
         units: "metric",
@@ -120,50 +131,51 @@ const HotelSearchResults = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="mb-4 flex flex-col gap-4">
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-4 gap-2 w-full">
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Destination (e.g., Mumbai)..."
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 col-span-1 sm:col-span-2"
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-4 flex flex-col gap-3 bg-blue-950 rounded-[4px] p-4">
+        <div className="flex items-center flex-wrap gap-x-7">
+          <PassengerDropdown
+            adults={adults}
+            setAdults={setAdults}
+            children={children}
+            setChildren={setChildren}
           />
-          <input
+
+          <Select
+            value={rooms}
+            onChange={(e) => setRooms(e.target.value)}
+            options={roomOptions}
+            className="col-span-1 sm:col-span-1"
+          />
+        </div>
+        <div className="flex-1 flex flex-col lg:flex-row gap-2 w-full">
+          <div className="w-full">
+            <Input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="e.g., Mumbai..."
+              className=""
+              label="Destination"
+            />
+          </div>
+
+          <Input
             type="date"
             value={checkInDate}
             onChange={(e) => setCheckInDate(e.target.value)}
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className=""
+            label="Check in"
           />
-          <input
+
+          <Input
             type="date"
             value={checkOutDate}
             onChange={(e) => setCheckOutDate(e.target.value)}
-            className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className=""
+            label="Check out"
           />
-          <div className="flex gap-2">
-            <select
-              value={adults}
-              onChange={(e) => setAdults(e.target.value)}
-              className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="1">1 Adult</option>
-              <option value="2">2 Adults</option>
-              <option value="3">3 Adults</option>
-              <option value="4">4 Adults</option>
-            </select>
-            <select
-              value={rooms}
-              onChange={(e) => setRooms(e.target.value)}
-              className="w-full p-2 sm:p-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="1">1 Room</option>
-              <option value="2">2 Rooms</option>
-              <option value="3">3 Rooms</option>
-            </select>
-          </div>
         </div>
         <div className="flex justify-end w-full">
           <div className="w-fit">

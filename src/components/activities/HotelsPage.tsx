@@ -1,14 +1,12 @@
 import { getImageSrc } from "../../utils/imageUtils";
 import Button from "../props/Button";
 import { Link } from "react-router-dom";
-import { useAttraction } from "../../config/AttractionContext";
 import type { Attraction } from "../../utils/types";
-import AttractionResultsCardProp from "../props/AttractionResultsCardProp";
 import HotelResultsCardProp from "../props/HotelResultsCardProp";
 import { useHotel } from "../../config/HotelContext";
 
 const HotelsPage = () => {
-  const { hotels, removeHotel } = useHotel();
+  const { hotels } = useHotel();
 
   return (
     <div className="h-full">
@@ -21,9 +19,13 @@ const HotelsPage = () => {
             <p className="font-semibold text-sm">Hotels</p>
           </div>
 
-          <div>
-            <Button>Add Hotels</Button>
-          </div>
+          {hotels.length > 0 && (
+            <Link to="/hotels/results">
+              <div>
+                <Button>Add Hotels</Button>
+              </div>
+            </Link>
+          )}
         </div>
         <div className="mt-10">
           {hotels.length === 0 ? (
