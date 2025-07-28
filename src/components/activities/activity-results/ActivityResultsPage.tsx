@@ -21,7 +21,6 @@ const ActivityResultsPage = ({ results }: ActivityResultsPageProps) => {
               date={attraction.date}
               price={attraction.price}
               image={attraction.image}
-              remove
             />
           ))
         ) : (

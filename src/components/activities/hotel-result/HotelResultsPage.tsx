@@ -21,7 +21,6 @@ const HotelResultsPage = ({ results }: HotelResultsPageProps) => {
               date={hotel.date}
               price={hotel.price}
               image={hotel.image}
-              remove
             />
           ))
         ) : (
